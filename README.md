@@ -1,13 +1,13 @@
 # Setup Kubernetes Cluster with Terraform and Kops - PART 1
   * [Who should read this Blog:](#who-should-read-this-blog)
   * [Short introduction](#short-introduction)
-      - [What is Terraform?](#what-is-terraform)
-      - [What is Kubernetes ?](#what-is-kubernetes)
+      - [What is Terraform](#what-is-terraform)
+      - [What is Kubernetes](#what-is-kubernetes)
   * [Problem we are trying to solve](#problem-we-are-trying-to-solve)
   * [Stack used](#stack-used)
   * [Actual implementation](#actual-implementation)
-      - [Install Terraform, Kops and Kubectl](#install-terraform--kops-and-kubectl)
-      - [Setup S3, VPC and Domain using Terraform](#setup-s3--vpc-and-domain-using-terraform)
+      - [Install Terraform, Kops and Kubectl](#install-terraform-kops-and-kubectl)
+      - [Setup S3, VPC and Domain using Terraform](#setup-s3-vpc-and-domain-using-terraform)
       - [Setup K8 Cluster using KOPS](#setup-k8-cluster-using-kops)
       - [Install a Smaple Application in the K8 Cluster](#install-a-smaple-application-in-the-k8-cluster)
       - [Cleanup the setup](#cleanup-the-setup)
@@ -26,13 +26,13 @@ the host the set of containers/pods
 ## Short introduction
 The aim of this blog is not to give in depth knowledge of Terraform or K8. but to show an working example as a quick 
 start guide
-#### What is Terraform?
+#### What is Terraform
 Terraform is a tool for building, changing, and versioning infrastructure safely and efficiently. Terraform can manage 
 existing and popular service providers as well as custom in-house solutions.
 
 Pls refer : https://www.terraform.io/intro/index.html for further info
 
-#### What is Kubernetes ?
+#### What is Kubernetes
 K8  is an open-source system for automating deployment, scaling, and management of containerized applications. It 
 groups containers that make up an application into logical units for easy management and discovery.
 
