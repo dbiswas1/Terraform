@@ -1,8 +1,8 @@
 # Setup Kubernetes Cluster with Terraform and Kops - PART 1
-  * [Who should read this Blog:](#who-should-read-this-blog-)
+  * [Who should read this Blog:](#who-should-read-this-blog)
   * [Short introduction](#short-introduction)
-      - [What is Terraform?](#what-is-terraform-)
-      - [What is Kubernetes ?](#what-is-kubernetes--)
+      - [What is Terraform?](#what-is-terraform)
+      - [What is Kubernetes ?](#what-is-kubernetes)
   * [Problem we are trying to solve](#problem-we-are-trying-to-solve)
   * [Stack used](#stack-used)
   * [Actual implementation](#actual-implementation)
