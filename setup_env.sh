@@ -6,7 +6,7 @@
 
 sudo apt-get --yes update \
 && sudo apt-get --yes install jq \
-&& sudo apt-get --yes install unzip || log "ERROR: Failed update" && exit 1
+&& sudo apt-get --yes install unzip || log "ERROR: Failed update" $?
 
 KOPS_FLAVOR="kops-linux-amd64"
 KOPS_VERSION=$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)
@@ -21,6 +21,9 @@ TERRAFORM_URL="$(https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/t
 log()
 {
 		 echo "[`date '+%Y-%m-%d %T'`]:" $1
+		 if [ $2 -ne 0 ]; then
+		   exit $2
+		 fi
 }
 
 # Download and setup Kops
@@ -28,12 +31,12 @@ log()
 kops_setup(){
 
     log "INFO: Start Kops Download  -> Version : ${KOPS_VERSION} and Flavor: ${KOPS_FLAVOR}"
-    curl -sLO ${KOPS_URL} || log  "ERROR: Downlaod failed" && exit 1
+    curl -sLO ${KOPS_URL} || log  "ERROR: Downlaod failed"  $?
     log "INFO: Download Complete"
 
     #give executable permision
 
-    chmod +x ${KOPS_FLAVOR} || log "ERROR: Cant set the executable permission" && exit 1
+    chmod +x ${KOPS_FLAVOR} || log "ERROR: Cant set the executable permission" $?
 
     if [ -d '/usr/local/bin' ]; then
 
@@ -51,16 +54,16 @@ kops_setup(){
 kubectl_setup(){
 
     log "INFO: Start Kubectl Download"
-    curl -sLO ${KUBECTL_URL} || log  "ERROR: Downlaod failed" && exit 1
+    curl -sLO ${KUBECTL_URL} || log  "ERROR: Downlaod failed" $?
     log "INFO: Download Complete"
 
     #give executable permision
 
-    chmod +x kubectl || log "ERROR: Cant set the executable permission" && exit 1
+    chmod +x kubectl || log "ERROR: Cant set the executable permission" $?
 
     if [ -d '/usr/local/bin' ]; then
 
-        mv kubectl /usr/local/bin/kops || log "ERROR: Moving Kubectl Failed"
+        mv kubectl /usr/local/bin/kops || log "ERROR: Moving Kubectl Failed" $?
     else
 
         log "ERROR: /usr/local/bin Directory Not found"
@@ -75,16 +78,16 @@ kubectl_setup(){
 terraform_setup(){
 
     log "INFO: Download Terraform -> Version ${TERRAFORM_VERSION}"
-    curl -sLO ${TERRAFORM_URL} || log  "ERROR: Downlaod failed" && exit 1
+    curl -sLO ${TERRAFORM_URL} || log  "ERROR: Downlaod failed" $?
     log "INFO: Download Complete"
 
-    unzip terraform_${TERRAFORM_URL}_linux_amd64.zip || log "ERROR: Unzipping" && exit 1
+    unzip terraform_${TERRAFORM_URL}_linux_amd64.zip || log "ERROR: Unzipping" $?
 
-    chmod +x terraform || log "ERROR: Cant set the executable permission" && exit 1
+    chmod +x terraform || log "ERROR: Cant set the executable permission" $?
 
     if [ -d '/usr/local/bin' ]; then
 
-        mv terraform /usr/local/bin/terraform || log "ERROR: Moving Terraform Failed"  && exit 1
+        mv terraform /usr/local/bin/terraform || log "ERROR: Moving Terraform Failed"  $?
 
     else
 
@@ -99,11 +102,11 @@ verify_install(){
 
     export PATH=${PATH}:/usr/local/bin/
 
-    kops version || log "ERROR: kops verification failed" && exit 1
+    kops version || log "ERROR: kops verification failed" $?
 
-    kubectl --help >/dev/null 2>&1 || log "ERROR: kubectl verification failed" && exit 1
+    kubectl --help >/dev/null 2>&1 || log "ERROR: kubectl verification failed" $?
 
-    terraform --version || log "ERROR: terraform verification failed" && exit 1
+    terraform --version || log "ERROR: terraform verification failed" $?
 
     log "INFO: Validation Successful !!!"
 
