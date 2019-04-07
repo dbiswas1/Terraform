@@ -20,9 +20,13 @@ TERRAFORM_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/ter
 
 log()
 {
-		 exit_code=$2
+         exit_code=$2
+		 if [ -z $2 ]; then
+		    exit_code=0
+		 fi
+
 		 echo "[`date '+%Y-%m-%d %T'`]:" $1
-		 if [ -z ${exit_code} -a ${exit_code} -ne "0" ]; then
+		 if [ ${exit_code} -ne "0" ]; then
 		   exit ${exit_code}
 		 fi
 }
