@@ -45,7 +45,7 @@ kops_setup(){
 
     if [ -d '/usr/local/bin' ]; then
 
-        mv kops-linux-amd64 /usr/local/bin/kops
+        sudo mv kops-linux-amd64 /usr/local/bin/kops
     else
         log "ERROR: /usr/local/bin Directory Not found"
     fi
@@ -68,7 +68,7 @@ kubectl_setup(){
 
     if [ -d '/usr/local/bin' ]; then
 
-        mv kubectl /usr/local/bin/kops || log "ERROR: Moving Kubectl Failed" $?
+        sudo mv kubectl /usr/local/bin/kops || log "ERROR: Moving Kubectl Failed" $?
     else
 
         log "ERROR: /usr/local/bin Directory Not found"
@@ -92,7 +92,7 @@ terraform_setup(){
 
     if [ -d '/usr/local/bin' ]; then
 
-        mv terraform /usr/local/bin/terraform || log "ERROR: Moving Terraform Failed"  $?
+        sudo mv terraform /usr/local/bin/terraform || log "ERROR: Moving Terraform Failed"  $?
 
     else
 
