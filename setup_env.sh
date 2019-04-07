@@ -107,7 +107,7 @@ verify_install(){
 
     export PATH=${PATH}:/usr/local/bin/
 
-    kops version || log "ERROR: kops verification failed" $?
+    kops --help  >/dev/null 2>&1 || log "ERROR: kops verification failed" $?
 
     kubectl --help >/dev/null 2>&1 || log "ERROR: kubectl verification failed" $?
 
