@@ -52,6 +52,7 @@ kops_setup(){
 
     log "INFO: Kops setup done -> Version : ${KOPS_VERSION} and Flavor: ${KOPS_FLAVOR}"
 
+    echo "======================================================================================"
     kubectl_setup
 
 }
@@ -109,14 +110,17 @@ verify_install(){
 
     kops --help  >/dev/null 2>&1 || log "ERROR: kops verification failed" $?
 
+    log "INFO: VERIFY KUBECTL"
+
     kubectl --help >/dev/null 2>&1 || log "ERROR: kubectl verification failed" $?
+
+    log "INFO: VERIFY TERRAFORM"
 
     terraform --version || log "ERROR: terraform verification failed" $?
 
     log "INFO: Validation Successful !!!"
 
     rm -f terraform_0.11.13_linux_amd64.zip || log "ERROR: terraform zip Cleanup failed" $?
-
 
 }
 
