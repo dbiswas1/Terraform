@@ -16,13 +16,14 @@ KUBECTL_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/rele
 KUBECTL_URL="https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
 
 TERRAFORM_VERSION=$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version')
-TERRAFORM_URL="$(https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip)"
+TERRAFORM_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
 
 log()
 {
+		 exit_code=$2
 		 echo "[`date '+%Y-%m-%d %T'`]:" $1
-		 if [ $2 -ne "0" ]; then
-		   exit $2
+		 if [ -z ${exit_code} -a ${exit_code} -ne "0" ]; then
+		   exit ${exit_code}
 		 fi
 }
 
