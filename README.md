@@ -18,11 +18,13 @@ start guide
 #### What is Terraform?
 Terraform is a tool for building, changing, and versioning infrastructure safely and efficiently. Terraform can manage 
 existing and popular service providers as well as custom in-house solutions.
+
 Pls refer : https://www.terraform.io/intro/index.html for further info
 
 #### What is Kubernetes ?
 K8  is an open-source system for automating deployment, scaling, and management of containerized applications. It 
 groups containers that make up an application into logical units for easy management and discovery.
+
 Pls refer : https://kubernetes.io/ for further info
 
 ## Problem we are trying to solve
