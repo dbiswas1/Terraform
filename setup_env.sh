@@ -86,7 +86,7 @@ terraform_setup(){
     curl -sLO ${TERRAFORM_URL} || log  "ERROR: Downlaod failed" $?
     log "INFO: Download Complete"
 
-    unzip terraform_${TERRAFORM_URL}_linux_amd64.zip || log "ERROR: Unzipping" $?
+    unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip || log "ERROR: Unzipping terraform_${TERRAFORM_VERSION}_linux_amd64.zip" $?
 
     chmod +x terraform || log "ERROR: Cant set the executable permission" $?
 
