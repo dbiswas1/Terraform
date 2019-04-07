@@ -68,7 +68,7 @@ kubectl_setup(){
 
     if [ -d '/usr/local/bin' ]; then
 
-        sudo mv kubectl /usr/local/bin/kops || log "ERROR: Moving Kubectl Failed" $?
+        sudo mv kubectl /usr/local/bin/kubectl || log "ERROR: Moving Kubectl Failed" $?
     else
 
         log "ERROR: /usr/local/bin Directory Not found"
