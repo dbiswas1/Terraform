@@ -1,5 +1,16 @@
 # Setup Kubernetes Cluster with Terraform and Kops - PART 1
-
+  * [Who should read this Blog:](#who-should-read-this-blog-)
+  * [Short introduction](#short-introduction)
+      - [What is Terraform?](#what-is-terraform-)
+      - [What is Kubernetes ?](#what-is-kubernetes--)
+  * [Problem we are trying to solve](#problem-we-are-trying-to-solve)
+  * [Stack used](#stack-used)
+  * [Actual implementation](#actual-implementation)
+      - [Install Terraform, Kops and Kubectl](#install-terraform--kops-and-kubectl)
+      - [Setup S3, VPC and Domain using Terraform](#setup-s3--vpc-and-domain-using-terraform)
+      - [Setup K8 Cluster using KOPS](#setup-k8-cluster-using-kops)
+      - [Install a Smaple Application in the K8 Cluster](#install-a-smaple-application-in-the-k8-cluster)
+      - [Cleanup the setup](#cleanup-the-setup)
 ## Who should read this Blog:
 This Blog is for those who wants to quickly get an overall general understanding on setting up a container eco system 
 and understand how **infrastructure as a code** looks like. this is meant for all who wants to see an working example 
@@ -95,10 +106,14 @@ Terraform v0.11.13
 ```
 
 #### Setup S3, VPC and Domain using Terraform
+**WIP**
 
 #### Setup K8 Cluster using KOPS
+**WIP**
 
 #### Install a Smaple Application in the K8 Cluster
+**WIP**
 
 #### Cleanup the setup
+**WIP**
 
