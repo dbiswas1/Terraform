@@ -115,7 +115,7 @@ verify_install(){
 
     log "INFO: Validation Successful !!!"
 
-    sudo rm -f terraform_0.11.13_linux_amd64.zip || log "ERROR: terraform zip Cleanup failed" $?
+    rm -f terraform_0.11.13_linux_amd64.zip || log "ERROR: terraform zip Cleanup failed" $?
 
 
 }
