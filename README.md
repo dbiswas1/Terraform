@@ -43,11 +43,11 @@ We will launch an AWS VPC, S3 bucket and Domain using terraform which are AWS re
 instances of master and nodes to set up a K8 Cluster
 
 ## Stack used
-Cloud: AWS
-Region: us-west-2
-Instance Type: t2.medium
-OS: Ubuntu 18.04
-AMI : ami-005bdb005fb00e791
+* Cloud: `AWS`
+* Region: `us-west-2`
+* Instance Type: `t2.medium`
+* OS: Ubuntu `18.04`
+* AMI : `ami-005bdb005fb00e791`
 
 Note: Please check the details before using scripts to launch it will incur some cost in the AWS 
 
