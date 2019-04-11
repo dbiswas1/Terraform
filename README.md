@@ -3,6 +3,8 @@
   * [Short introduction](#short-introduction)
       - [What is Terraform](#what-is-terraform)
       - [What is Kubernetes](#what-is-kubernetes)
+      - [What is KOPS](#What is KOPS)
+      - [What is Kubect](#What is Kubectl)
   * [Problem we are trying to solve](#problem-we-are-trying-to-solve)
   * [Stack used](#stack-used)
   * [Actual implementation](#actual-implementation)
@@ -38,6 +40,17 @@ groups containers that make up an application into logical units for easy manage
 
 Pls refer : https://kubernetes.io/ for further info
 
+#### What is KOPS
+kops helps you create, destroy, upgrade and maintain production-grade, highly available, Kubernetes clusters from the 
+command line. AWS (Amazon Web Services) is currently officially supported
+
+Pls refer: https://github.com/kubernetes/kops
+
+#### What is Kubectl
+Kubectl is a command line interface for running commands against Kubernetes clusters
+
+Pls refer: https://kubernetes.io/docs/reference/kubectl/overview/
+
 ## Problem we are trying to solve
 We will launch an AWS VPC, S3 bucket and Domain using terraform which are AWS resources and use KOPS for launcing the ec2
 instances of master and nodes to set up a K8 Cluster
@@ -57,7 +70,7 @@ Note: Please check the details before using scripts to launch it will incur some
 clone the repo https://github.com/dbiswas1/Terraform.git
 
 ```
-git clone https://github.com/dbiswas1/Terraform.git
+git clone https://github.com/dbiswas1/terraform.git
 cd Terraform
 chmod 755 setup_env.sh
 ./setup_env.sh
@@ -105,13 +118,111 @@ Terraform v0.11.13
 ======================================================================================
 ```
 
-#### Setup S3, VPC and Domain using Terraform
-**WIP**
+#### Setup S3, VPC and Security Group using Terraform
+* clone the repo `git clone https://github.com/dbiswas1/terraform.git`
+* cd terraform-files
+* `terraform init` to initialise the terraform workspace
+* `terraform plan` this is a dry run where actual exceution doesnot happen but terraform shows what it will do
+* `terraform graph` optional but you can check how the dependencies are
+* finally `terraform apply` to execute
+* giving some sample output below you would also see how terraform outputs file is helping displaying the required output
+* in this terraform files we have covered how to use 
+   * [data](https://www.terraform.io/docs/configuration/data-sources.html)
+   * [modules](https://www.terraform.io/docs/modules/index.html)
+   * [outputs](https://www.terraform.io/docs/configuration/outputs.html)
+   * [local variables](https://www.terraform.io/docs/configuration/locals.html) .. we will cover more in subsequent series
+* Some references 
+    * https://github.com/terraform-aws-modules/terraform-aws-vpc
+    
+```
+#########################################################################
+# Output of a terraform plan
+#########################################################################
+ubuntu@ip-172-31-44-201:~/terraform/terraform-files$ terraform init
+Initializing modules...
+- module.blog_vpc
+  Found version 1.60.0 of terraform-aws-modules/vpc/aws on registry.terraform.io
+  Getting source "terraform-aws-modules/vpc/aws"
+
+Initializing provider plugins...
+- Checking for available provider plugins on https://releases.hashicorp.com...
+- Downloading plugin for provider "aws" (2.6.0)...
+
+The following providers do not have any version constraints in configuration,
+so the latest version was installed.
+
+To prevent automatic upgrades to new major versions that may contain breaking
+changes, it is recommended to add version = "..." constraints to the
+corresponding provider blocks in configuration, with the constraint strings
+suggested below.
+
+* provider.aws: version = "~> 2.6"
+
+Terraform has been successfully initialized!
+
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
+```
+```
+######################################################################
+# output of a terraform apply 
+#######################################################################
+module.blog_vpc.aws_route.private_nat_gateway[1]: Creation complete after 0s (ID: r-rtb-093a778094db492241080289494)
+module.blog_vpc.aws_route.private_nat_gateway[2]: Creation complete after 0s (ID: r-rtb-020cf78f454e1aba71080289494)
+module.blog_vpc.aws_route.private_nat_gateway[0]: Creation complete after 0s (ID: r-rtb-0e006178f8bfa887a1080289494)
+
+Apply complete! Resources: 9 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+availability_zones = [
+    us-west-2a,
+    us-west-2b,
+    us-west-2c
+]
+common_http_sg_id = sg-04bb26488f455e9a5
+default_security_group_id = sg-020a829bcdc36d239
+kops_s3_bucket = k8.cloudservices2go.com
+kubernetes_cluster_name = blog.cloudservices2go.com
+nat_gateway_ids = [
+    nat-04884a9df64dc2099,
+    nat-0ccbf831effb9ad2c,
+    nat-05ffe724a00e92a26
+]
+private_route_table_ids = [
+    rtb-0e006178f8bfa887a,
+    rtb-093a778094db49224,
+    rtb-020cf78f454e1aba7
+]
+private_subnet_ids = [
+    subnet-03788eca5f2aa0f69,
+    subnet-08f88757683c4e6d5,
+    subnet-0d0508d513a0db975
+]
+public_route_table_ids = [
+    rtb-0135b9019663b2909
+]
+public_subnet_ids = [
+    subnet-0d605eda93449e46a,
+    subnet-018aeef0867af06fb,
+    subnet-0fcb2eb7dd8289fc5
+]
+region = us-west-2
+vpc_cidr_block = 14.0.0.0/16
+vpc_id = vpc-06a1a64382adb8ed4
+vpc_name = blog-vpc-cloudservices2go.com
+
+```
 
 #### Setup K8 Cluster using KOPS
 **WIP**
 
-#### Install a Smaple Application in the K8 Cluster
+#### Install a Sample Application in the K8 Cluster
 **WIP**
 
 #### Cleanup the setup
