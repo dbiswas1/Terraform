@@ -11,6 +11,7 @@
       - [Install Terraform, Kops and Kubectl](#install-terraform-kops-and-kubectl)
       - [Setup S3, VPC and Domain using Terraform](#setup-s3-vpc-and-domain-using-terraform)
       - [Setup K8 Cluster using KOPS](#setup-k8-cluster-using-kops)
+      - [Validate the K8 Setup](#Validate-the-K8-Setup)
       - [Install a Smaple Application in the K8 Cluster](#install-a-smaple-application-in-the-k8-cluster)
       - [Cleanup the setup](#cleanup-the-setup)
 ## Who should read this Blog:
@@ -220,12 +221,289 @@ vpc_name = blog-vpc-cloudservices2go.com
 ```
 
 #### Setup K8 Cluster using KOPS and Terraform
-*  we will make use of [`kops templating`](https://github.com/kubernetes/kops/blob/master/docs/cluster_template.md) tool which is based on `GO` templates 
-* 
+* we will make use of [`kops templating`](https://github.com/kubernetes/kops/blob/master/docs/cluster_template.md) tool which is based on `GO` templates 
+* we will make sure we have ~/.ssh/id-rsa.pub ready else generate one using `ssh-keygen`
+* run `kops create secret --name blog.cloudservices2go.com --state s3://k8.cloudservices2go.com sshpublickey admin -i ~/.ssh/id_rsa.pub`
+    * the above steps is due to kops issue Refer: https://github.com/kubernetes/kops/issues/3693
+* we now run a small utility script `./generate-tf-files.sh` from the repo to generate the terraform files lets
+* run `terraform init`
+* run `terraform plan`
+* run `terraform apply`
+* BOOM ! our Kops cluster is ready
 
+```
+ubuntu@ip-172-31-44-201:~/terraform/k8$ kops create secret --name blog.cloudservices2go.com --state s3://k8.cloudservices2go.com sshpublickey admin -i ~/.ssh/id_rsa.pub
+############################################################
+# output of ./generate-tf-files.sh
+############################################################
+ubuntu@ip-172-31-44-201:~/terraform/k8$ ./generate-tf-files.sh
+
+*********************************************************************************
+
+A new kubernetes version is available: 1.10.13
+Upgrading is recommended (try kops upgrade cluster)
+
+More information: https://github.com/kubernetes/kops/blob/master/permalinks/upgrade_k8s.md#1.10.13
+
+*********************************************************************************
+
+
+*********************************************************************************
+
+Kubelet anonymousAuth is currently turned on. This allows RBAC escalation and remote code execution possibilites.
+It is highly recommended you turn it off by setting 'spec.kubelet.anonymousAuth' to 'false' via 'kops edit cluster'
+
+See https://github.com/kubernetes/kops/blob/master/docs/security.md#kubelet-api
+
+*********************************************************************************
+
+W0412 11:21:08.616407    4709 external_access.go:39] KubernetesAPIAccess is empty
+W0412 11:21:08.616444    4709 external_access.go:43] SSHAccess is empty
+I0412 11:21:09.017197    4709 executor.go:103] Tasks: 0 done / 92 total; 40 can run
+I0412 11:21:09.019234    4709 dnszone.go:242] Check for existing route53 zone to re-use with name ""
+I0412 11:21:09.147644    4709 dnszone.go:249] Existing zone "cloudservices2go.com." found; will configure TF to reuse
+I0412 11:21:09.370175    4709 vfs_castore.go:736] Issuing new certificate: "apiserver-aggregator-ca"
+I0412 11:21:09.595899    4709 vfs_castore.go:736] Issuing new certificate: "ca"
+I0412 11:21:09.807509    4709 executor.go:103] Tasks: 40 done / 92 total; 28 can run
+I0412 11:21:10.623507    4709 vfs_castore.go:736] Issuing new certificate: "kube-controller-manager"
+I0412 11:21:10.822131    4709 vfs_castore.go:736] Issuing new certificate: "kubecfg"
+I0412 11:21:10.862803    4709 vfs_castore.go:736] Issuing new certificate: "kubelet"
+I0412 11:21:10.903090    4709 vfs_castore.go:736] Issuing new certificate: "kube-scheduler"
+I0412 11:21:11.101020    4709 vfs_castore.go:736] Issuing new certificate: "kubelet-api"
+I0412 11:21:11.315278    4709 vfs_castore.go:736] Issuing new certificate: "master"
+I0412 11:21:11.491097    4709 vfs_castore.go:736] Issuing new certificate: "apiserver-aggregator"
+I0412 11:21:11.662531    4709 vfs_castore.go:736] Issuing new certificate: "kops"
+I0412 11:21:11.704351    4709 vfs_castore.go:736] Issuing new certificate: "kube-proxy"
+I0412 11:21:11.842441    4709 vfs_castore.go:736] Issuing new certificate: "apiserver-proxy-client"
+I0412 11:21:12.070497    4709 executor.go:103] Tasks: 68 done / 92 total; 16 can run
+I0412 11:21:12.195891    4709 executor.go:103] Tasks: 84 done / 92 total; 5 can run
+I0412 11:21:12.196354    4709 executor.go:103] Tasks: 89 done / 92 total; 3 can run
+I0412 11:21:12.196544    4709 executor.go:103] Tasks: 92 done / 92 total; 0 can run
+I0412 11:21:12.203555    4709 target.go:312] Terraform output is in .
+I0412 11:21:12.589124    4709 update_cluster.go:290] Exporting kubecfg for cluster
+kops has set your kubectl context to blog.cloudservices2go.com
+
+Terraform output has been placed into .
+Run these commands to apply the configuration:
+   cd .
+   terraform plan
+   terraform apply
+
+Suggestions:
+ * validate cluster: kops validate cluster
+ * list nodes: kubectl get nodes --show-labels
+ * ssh to the master: ssh -i ~/.ssh/id_rsa admin@api.blog.cloudservices2go.com
+ * the admin user is specific to Debian. If not using Debian please use the appropriate user based on your OS.
+ * read about installing addons at: https://github.com/kubernetes/kops/blob/master/docs/addons.md.
+``` 
+```
+############################################################
+# output of terraform init
+############################################################
+ubuntu@ip-172-31-44-201:~/terraform/k8$ terraform init
+
+Initializing provider plugins...
+- Checking for available provider plugins on https://releases.hashicorp.com...
+- Downloading plugin for provider "aws" (2.6.0)...
+
+The following providers do not have any version constraints in configuration,
+so the latest version was installed.
+
+To prevent automatic upgrades to new major versions that may contain breaking
+changes, it is recommended to add version = "..." constraints to the
+corresponding provider blocks in configuration, with the constraint strings
+suggested below.
+
+* provider.aws: version = "~> 2.6"
+
+Terraform has been successfully initialized!
+
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
+
+```
+
+```
+############################################################
+# Curtailed output of terraform apply
+############################################################
+Apply complete! Resources: 40 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+cluster_name = blog.cloudservices2go.com
+master_autoscaling_group_ids = [
+    master-us-west-2a.masters.blog.cloudservices2go.com,
+    master-us-west-2b.masters.blog.cloudservices2go.com,
+    master-us-west-2c.masters.blog.cloudservices2go.com
+]
+master_security_group_ids = [
+    sg-0231e7ca2592da25b
+]
+masters_role_arn = arn:aws:iam::303882392497:role/masters.blog.cloudservices2go.com
+masters_role_name = masters.blog.cloudservices2go.com
+node_autoscaling_group_ids = [
+    nodes.blog.cloudservices2go.com
+]
+node_security_group_ids = [
+    sg-0e0aaf96e98bd2d64
+]
+node_subnet_ids = [
+    subnet-03788eca5f2aa0f69,
+    subnet-08f88757683c4e6d5,
+    subnet-0d0508d513a0db975
+]
+nodes_role_arn = arn:aws:iam::303882392497:role/nodes.blog.cloudservices2go.com
+nodes_role_name = nodes.blog.cloudservices2go.com
+region = us-west-2
+subnet_ids = [
+    subnet-018aeef0867af06fb,
+    subnet-03788eca5f2aa0f69,
+    subnet-08f88757683c4e6d5,
+    subnet-0d0508d513a0db975,
+    subnet-0d605eda93449e46a,
+    subnet-0fcb2eb7dd8289fc5
+]
+subnet_us-west-2a_id = subnet-03788eca5f2aa0f69
+subnet_us-west-2b_id = subnet-08f88757683c4e6d5
+subnet_us-west-2c_id = subnet-0d0508d513a0db975
+subnet_utility-us-west-2a_id = subnet-0d605eda93449e46a
+subnet_utility-us-west-2b_id = subnet-018aeef0867af06fb
+subnet_utility-us-west-2c_id = subnet-0fcb2eb7dd8289fc5
+vpc_id = vpc-06a1a64382adb8ed4
+
+```
+
+#### Validate the K8 Setup
+* kops validate cluster would show us the cluster state we created
+* NOTE: Make sure you created proper Security group settings in your TF to make this command work
+
+```
+############################################################
+# output of Validate Cluster
+############################################################
+ubuntu@ip-172-31-44-201:~/terraform/k8$ kops validate cluster --state s3://k8.cloudservices2go.com
+Using cluster from kubectl context: blog.cloudservices2go.com
+
+Validating cluster blog.cloudservices2go.com
+
+INSTANCE GROUPS
+NAME			ROLE	MACHINETYPE	MIN	MAX	SUBNETS
+master-us-west-2a	Master	t2.medium	1	1	us-west-2a
+master-us-west-2b	Master	t2.medium	1	1	us-west-2b
+master-us-west-2c	Master	t2.medium	1	1	us-west-2c
+nodes			Node	t2.small	1	2	us-west-2a,us-west-2b,us-west-2c
+
+NODE STATUS
+NAME						ROLE	READY
+ip-14-0-1-106.us-west-2.compute.internal	master	True
+ip-14-0-1-184.us-west-2.compute.internal	node	True
+ip-14-0-2-97.us-west-2.compute.internal		master	True
+ip-14-0-3-4.us-west-2.compute.internal		master	True
+
+Your cluster blog.cloudservices2go.com is ready
+
+```
 #### Install a Sample Application in the K8 Cluster
-**WIP**
+This is just an example app we will explain in detail in comming series how to deploy a full fledge application in K8.
+here we are just validating the setup as intention was to create a K* cluster using terraform
+steps are:
+* export CLUSTER_NAME=blog.cloudservices2go.com
+* export STATE=s3://k8.cloudservices2go.com
+* kops export kubecfg --name ${CLUSTER_NAME} --state ${STATE}
+* kubectl config set-cluster ${CLUSTER_NAME} --server=https://api.${CLUSTER_NAME}
+* kubectl run -i --tty busybox --image=busybox -- sh
+```
+############################################################
+# output of Application 
+############################################################
+ubuntu@ip-172-31-44-201:~/terraform/k8$ export CLUSTER_NAME=blog.cloudservices2go.com
+ubuntu@ip-172-31-44-201:~/terraform/k8$ export STATE=s3://k8.cloudservices2go.com
+ubuntu@ip-172-31-44-201:~/terraform/k8$ kops export kubecfg --name ${CLUSTER_NAME} --state ${STATE}
+kops has set your kubectl context to blog.cloudservices2go.com
+ubuntu@ip-172-31-44-201:~/terraform/k8$ kubectl config set-cluster ${CLUSTER_NAME} --server=https://api.${CLUSTER_NAME}
+Cluster "blog.cloudservices2go.com" set.
+ubuntu@ip-172-31-44-201:~/terraform/k8$ kubectl get pods --all-namespaces
+NAMESPACE     NAME                                                               READY   STATUS    RESTARTS   AGE
+kube-system   canal-kxrwc                                                        3/3     Running   0          9m
+kube-system   canal-l842v                                                        3/3     Running   0          11m
+kube-system   canal-sws2n                                                        3/3     Running   0          9m
+kube-system   canal-vbqkg                                                        3/3     Running   0          11m
+kube-system   dns-controller-64c55c5f49-qhjfz                                    1/1     Running   0          11m
+kube-system   etcd-server-events-ip-14-0-1-106.us-west-2.compute.internal        1/1     Running   0          11m
+kube-system   etcd-server-events-ip-14-0-2-97.us-west-2.compute.internal         1/1     Running   0          9m
+kube-system   etcd-server-events-ip-14-0-3-4.us-west-2.compute.internal          1/1     Running   0          10m
+kube-system   etcd-server-ip-14-0-1-106.us-west-2.compute.internal               1/1     Running   2          10m
+kube-system   etcd-server-ip-14-0-2-97.us-west-2.compute.internal                1/1     Running   4          9m
+kube-system   etcd-server-ip-14-0-3-4.us-west-2.compute.internal                 1/1     Running   4          10m
+kube-system   kube-apiserver-ip-14-0-1-106.us-west-2.compute.internal            1/1     Running   3          10m
+kube-system   kube-apiserver-ip-14-0-2-97.us-west-2.compute.internal             1/1     Running   4          8m
+kube-system   kube-apiserver-ip-14-0-3-4.us-west-2.compute.internal              1/1     Running   4          10m
+kube-system   kube-controller-manager-ip-14-0-1-106.us-west-2.compute.internal   1/1     Running   0          10m
+kube-system   kube-controller-manager-ip-14-0-2-97.us-west-2.compute.internal    1/1     Running   0          9m
+kube-system   kube-controller-manager-ip-14-0-3-4.us-west-2.compute.internal     1/1     Running   0          11m
+kube-system   kube-dns-5fbcb4d67b-9tthl                                          3/3     Running   0          9m
+kube-system   kube-dns-5fbcb4d67b-k659l                                          3/3     Running   0          11m
+kube-system   kube-dns-autoscaler-6874c546dd-cc8mr                               1/1     Running   0          11m
+kube-system   kube-proxy-ip-14-0-1-106.us-west-2.compute.internal                1/1     Running   0          10m
+kube-system   kube-proxy-ip-14-0-1-184.us-west-2.compute.internal                1/1     Running   0          9m
+kube-system   kube-proxy-ip-14-0-2-97.us-west-2.compute.internal                 1/1     Running   0          9m
+kube-system   kube-proxy-ip-14-0-3-4.us-west-2.compute.internal                  1/1     Running   0          10m
+kube-system   kube-scheduler-ip-14-0-1-106.us-west-2.compute.internal            1/1     Running   0          10m
+kube-system   kube-scheduler-ip-14-0-2-97.us-west-2.compute.internal             1/1     Running   0          9m
+kube-system   kube-scheduler-ip-14-0-3-4.us-west-2.compute.internal              1/1     Running   0          10m
+ubuntu@ip-172-31-44-201:~/terraform/k8$ kubectl run -i --tty busybox --image=busybox -- sh
+kubectl run --generator=deployment/apps.v1 is DEPRECATED and will be removed in a future version. Use kubectl run --generator=run-pod/v1 or kubectl create instead.
+If you don't see a command prompt, try pressing enter.
+/ #
+/ # hostname
+busybox-5858cc4697-6ml5s
+/ # Session ended, resume using 'kubectl attach busybox-5858cc4697-6ml5s -c busybox -i -t' command when the pod is running
+ubuntu@ip-172-31-44-201:~/terraform/k8$
+ubuntu@ip-172-31-44-201:~/terraform/k8$ kubectl get pods --all-namespaces | grep busybox
+default       busybox-5858cc4697-6ml5s
+```
 
 #### Cleanup the setup
-**WIP**
+`terraform destroy` in respective dirtectories will cleanup everything you have setup
+
+```
+########################################################################################################################
+# Curtailed output of dsetroy inside k8 directory This will cleanup KOPS resources
+########################################################################################################################
+aws_security_group.masters-blog-cloudservices2go-com: Destroying... (ID: sg-0231e7ca2592da25b)
+aws_key_pair.kubernetes-blog-cloudservices2go-com-028c527b33f74ce529a8c3bf07ae8da1: Destroying... (ID: kubernetes.blog.cloudservices2go.com-02...7b:33:f7:4c:e5:29:a8:c3:bf:07:ae:8d:a1)
+aws_iam_instance_profile.masters-blog-cloudservices2go-com: Destroying... (ID: masters.blog.cloudservices2go.com)
+aws_key_pair.kubernetes-blog-cloudservices2go-com-028c527b33f74ce529a8c3bf07ae8da1: Destruction complete after 0s
+aws_security_group.masters-blog-cloudservices2go-com: Destruction complete after 1s
+aws_iam_instance_profile.masters-blog-cloudservices2go-com: Destruction complete after 1s
+aws_iam_role.masters-blog-cloudservices2go-com: Destroying... (ID: masters.blog.cloudservices2go.com)
+aws_iam_role.masters-blog-cloudservices2go-com: Destruction complete after 0s
+
+Destroy complete! Resources: 40 destroyed.
+
+```
+```
+########################################################################################################################
+# Curtailed output of dsetroy inside terraform-files directory This will cleanup Networks, SG and S3
+########################################################################################################################
+module.blog_vpc.aws_eip.nat[0]: Destroying... (ID: eipalloc-0edf9c365bc69e954)
+module.blog_vpc.aws_eip.nat[1]: Destruction complete after 0s
+module.blog_vpc.aws_eip.nat[2]: Destruction complete after 0s
+module.blog_vpc.aws_eip.nat[0]: Destruction complete after 0s
+module.blog_vpc.aws_subnet.public[1]: Destruction complete after 1s
+module.blog_vpc.aws_subnet.public[2]: Destruction complete after 1s
+module.blog_vpc.aws_subnet.public[0]: Destruction complete after 1s
+module.blog_vpc.aws_internet_gateway.this: Still destroying... (ID: igw-069ddee7c85a4a274, 10s elapsed)
+module.blog_vpc.aws_internet_gateway.this: Destruction complete after 10s
+module.blog_vpc.aws_vpc.this: Destroying... (ID: vpc-06a1a64382adb8ed4)
+module.blog_vpc.aws_vpc.this: Destruction complete after 1s
+
+Destroy complete! Resources: 30 destroyed.
+```
 
