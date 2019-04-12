@@ -3,7 +3,7 @@
   * [Short introduction](#short-introduction)
       - [What is Terraform](#what-is-terraform)
       - [What is Kubernetes](#what-is-kubernetes)
-      - [What is KOPS](#What is KOPS)
+      - [What is KOPS](#What-is-KOPS)
       - [What is Kubect](#What is Kubectl)
   * [Problem we are trying to solve](#problem-we-are-trying-to-solve)
   * [Stack used](#stack-used)
@@ -219,8 +219,9 @@ vpc_name = blog-vpc-cloudservices2go.com
 
 ```
 
-#### Setup K8 Cluster using KOPS
-**WIP**
+#### Setup K8 Cluster using KOPS and Terraform
+*  we will make use of [`kops templating`](https://github.com/kubernetes/kops/blob/master/docs/cluster_template.md) tool which is based on `GO` templates 
+* 
 
 #### Install a Sample Application in the K8 Cluster
 **WIP**
